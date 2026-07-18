@@ -1,0 +1,39 @@
+id: bwapp-sqli-post-search-title
+
+info:
+  name: bWAPP - SQL Injection (POST/Search) - Error-Based via 'title' Parameter
+  author: anderson-steven
+  severity: critical
+  description: |
+    Custom template for bWAPP's "SQL Injection (POST/Search)" module (sqli_6.php, "Search for a
+    movie" form). At security level Low, the `title` POST parameter is concatenated directly
+    into a SQL query without sanitization. A syntax-breaking payload triggers an unhandled
+    mysql_error() that bWAPP echoes back in the response body.
+  tags: sqli,bwapp,custom,error-based
+
+http:
+  - cookie-reuse: true
+    method: POST
+    path:
+      - "{{BaseURL}}/login.php"
+    headers:
+      Content-Type: application/x-www-form-urlencoded
+    body: "login=bee&password=bug&security_level=0&form=submit"
+
+  - cookie-reuse: true
+    method: POST
+    path:
+      - "{{BaseURL}}/sqli_6.php"
+    headers:
+      Content-Type: application/x-www-form-urlencoded
+    body: "title=nuclei'&action=search"
+
+    matchers:
+      - type: word
+        part: body
+        words:
+          - "SQL syntax"
+          - "mysql_fetch"
+          - "Error: "
+          - "Warning: mysql"
+        condition: or

