@@ -1,5 +1,7 @@
 # 🛡️ Nuclei Guide — Guía Técnica de Escaneo de Vulnerabilidades
 
+![Portada](images/portada.png)
+
 > Guía técnica y laboratorio práctico sobre **Nuclei**, el escáner de vulnerabilidades basado en
 > templates de ProjectDiscovery, orientado a flujos reales de reconocimiento y análisis de
 > vulnerabilidades web.
